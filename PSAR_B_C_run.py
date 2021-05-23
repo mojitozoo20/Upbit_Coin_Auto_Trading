@@ -68,7 +68,7 @@ class Consumer(threading.Thread):
                 if hold_flag == False and wait_flag == False and \
                     curr.SAR < curr.BBAND_LOWER and curr.senkou_spna_A < curr.BBAND_MIDDLE and \
                     curr.senkou_spna_B < curr.BBAND_MIDDLE and curr.close < curr.BBAND_UPPER and \
-                    curr.senkou_spna_A > curr.senkou_spna_B:
+                    curr.senkou_spna_A >= curr.senkou_spna_B:
 
                     price_buy = price_curr
 
@@ -102,26 +102,25 @@ class Consumer(threading.Thread):
                     cash -= ((price_curr * volume) * 1.0005)
 
                 if hold_flag == True and curr.close < curr.SAR:
+                    upbit.sell_market_order(self.ticker, volume)
                     while True:
-                        upbit.sell_market_order(self.ticker, volume)
-                        while True:
-                            volume = upbit.get_balance(self.ticker)
-                            if volume == 0:
-                                print("<< 매도 주문이 완료되었습니다 >>")
-                                cash += (CASH * (price_curr / price_buy) * 0.9995)  # 수수료 0.05%
-                                price_buy = None
-                                hold_flag = False
-                                wait_flag = True
-                                break
-                            else:
-                                print("매도 주문 처리 대기중...")
-                                time.sleep(0.5)
+                        volume = upbit.get_balance(self.ticker)
+                        if volume == 0:
+                            print("<< 매도 주문이 완료되었습니다 >>")
+                            cash += (CASH * (price_curr / price_buy) * 0.9995)  # 수수료 0.05%
+                            price_buy = None
+                            hold_flag = False
+                            wait_flag = True
+                            break
+                        else:
+                            print("매도 주문 처리 대기중...")
+                            time.sleep(0.5)
 
                 # 10 seconds
                 if i == (5 * 10):
                     print(f"\t{TICKER} [{datetime.datetime.now()}]")
                     print(f"보유량: {upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag}, signal= {curr.SAR < curr.BBAND_LOWER and curr.senkou_spna_A < curr.BBAND_MIDDLE and curr.senkou_spna_B < curr.BBAND_MIDDLE and curr.close < curr.BBAND_UPPER and curr.senkou_spna_A > curr.senkou_spna_B}")
-                    print(f"close: {curr.close}, BBAND: [{int(curr.BBAND_UPPER)} {int(curr.BBAND_MIDDLE)} {int(curr.BBAND_LOWER)}], PSAR: {curr.SAR}")
+                    print(f"close: {curr.close}, BBAND: [{int(curr.BBAND_UPPER)} {int(curr.BBAND_MIDDLE)} {int(curr.BBAND_LOWER)}], PSAR: {curr.SAR}, 선행1: {curr.senkou_spna_A}, 선행2: {curr.senkou_spna_B}")
                     print(f"현재가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({cash / CASH * 100}%)")
                     i = 0
                 i += 1
