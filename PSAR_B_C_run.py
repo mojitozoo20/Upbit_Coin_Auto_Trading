@@ -85,6 +85,7 @@ class Consumer(threading.Thread):
                         order = upbit.get_order(ret['uuid'])
                         if order != None and len(order['trades']) > 0:
                             print("<< 매수 주문이 체결되었습니다 >>\n", order)
+                            hold_flag = True
                             break
                         else:
                             print("매수 주문 대기 중...")
