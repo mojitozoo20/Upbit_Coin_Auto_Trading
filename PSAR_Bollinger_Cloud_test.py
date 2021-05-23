@@ -15,7 +15,7 @@ TICKERS = ['KRW-DOGE','KRW-SOLVE','KRW-XRP','KRW-ETC','KRW-HUNT','KRW-ETH','KRW-
 
 for ticker in TICKERS:
     # Import data from Upbit
-    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210523 11:00:00", count=10000, period=0.2)
+    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210523 22:00:00", count=10000, period=0.2)
 
     # Drop the NaN values
     df = df.dropna()
