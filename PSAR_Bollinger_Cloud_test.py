@@ -1,4 +1,5 @@
 # Import pandas
+import datetime
 import pandas as pd
 
 # Import pyupbit
@@ -11,10 +12,10 @@ plt.style.use('fast')
 # Import talib
 import talib
 
-TICKER = "KRW-ETC"
+TICKER = "KRW-DOGE"
 
 # Import data from Upbit
-df = pyupbit.get_ohlcv(TICKER, interval="minute1", to="20210522 23:00:00", count=10000, period=0.2)
+df = pyupbit.get_ohlcv(TICKER, interval="minute1", to="20210523 11:00:00", count=10000, period=0.2)
 
 # Drop the NaN values
 df = df.dropna()
@@ -58,7 +59,7 @@ komu_cloud.fill_between(df.index[:], df.senkou_spna_A, df.senkou_spna_B, where=d
 plt.legend()
 plt.show()
 
-signal = (df.BBAND_LOWER > df.SAR) & (df.senkou_spna_A < df.BBAND_MIDDLE) & (df.senkou_spna_B < df.BBAND_MIDDLE) & (df.close < df.BBAND_UPPER)
+signal = (df.SAR < df.BBAND_LOWER) & (df.senkou_spna_A < df.BBAND_MIDDLE) & (df.senkou_spna_B < df.BBAND_MIDDLE) & (df.close < df.BBAND_UPPER) & (df.senkou_spna_A > df.senkou_spna_B)
 
 earning_rate = 1
 sell_date = None
@@ -80,4 +81,4 @@ for b in df.index[signal]:
     price_sell = target.loc[sell_date].close
 
     earning_rate *= (price_sell / price_buy) * 0.9987  # 수수료 0.05% 두 번 + 슬리피지 0.03%
-    print(earning_rate)
+print(earning_rate)
