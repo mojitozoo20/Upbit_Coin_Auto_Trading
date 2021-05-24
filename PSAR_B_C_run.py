@@ -38,7 +38,7 @@ class Consumer(threading.Thread):
         while True:
             try:
                 if not self.q.empty():
-                    df = pyupbit.get_ohlcv(self.ticker, interval="minute1", to=datetime.datetime.now())  # DataFrame 갱신
+                    df = pyupbit.get_ohlcv(self.ticker, interval="minute1")  # DataFrame 갱신
                     df['SAR'] = talib.SAR(df.high, df.low, acceleration=0.02, maximum=0.2)  # Parabolic SAR 계산
                     df['BBAND_UPPER'], df['BBAND_MIDDLE'], df['BBAND_LOWER'] = talib.BBANDS(df['close'], 20, 2)  # Bollinger Band 계산
 
@@ -66,9 +66,8 @@ class Consumer(threading.Thread):
                     wait_flag  = False  # 매 봉 대기모드 해제
 
                 if hold_flag == False and wait_flag == False and \
-                    curr.SAR < curr.BBAND_LOWER and curr.senkou_spna_A < curr.BBAND_MIDDLE and \
-                    curr.senkou_spna_B < curr.BBAND_MIDDLE and curr.close < curr.BBAND_UPPER and \
-                    curr.senkou_spna_A >= curr.senkou_spna_B:
+                    curr.SAR <= curr.BBAND_LOWER and curr.senkou_spna_A <= curr.BBAND_MIDDLE and \
+                    curr.senkou_spna_B <= curr.BBAND_MIDDLE and curr.senkou_spna_A >= curr.senkou_spna_B:
 
                     price_buy = price_curr
 
@@ -121,7 +120,7 @@ class Consumer(threading.Thread):
                     print(f"\t{TICKER} [{datetime.datetime.now()}]")
                     print(f"보유량: {upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag}, signal= {curr.SAR < curr.BBAND_LOWER and curr.senkou_spna_A < curr.BBAND_MIDDLE and curr.senkou_spna_B < curr.BBAND_MIDDLE and curr.close < curr.BBAND_UPPER and curr.senkou_spna_A > curr.senkou_spna_B}")
                     print(f"BBAND: [{int(curr.BBAND_UPPER)} {int(curr.BBAND_MIDDLE)} {int(curr.BBAND_LOWER)}], PSAR: {curr.SAR}, 선행1: {curr.senkou_spna_A}, 선행2: {curr.senkou_spna_B}")
-                    print(f"시가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({cash / CASH * 100}%)")
+                    print(f"전봉 종가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({cash / CASH * 100}%)")
                     i = 0
                 i += 1
             except:
@@ -136,11 +135,9 @@ class Producer(threading.Thread):
 
     def run(self):
         while True:
-            now = datetime.datetime.now()
-            if now.second == 1:
-                price = pyupbit.get_current_price(TICKER)
-                self.q.put(price)
-            time.sleep(0.2)
+            price = pyupbit.get_current_price(TICKER)
+            self.q.put(price)
+            time.sleep(60)
 
 now = datetime.datetime.now()
 print(f'환영합니다 -- Upbit Auto Trading -- [{now.year}-{now.month}-{now.day} {now.hour}:{now.minute}:{now.second}]')
