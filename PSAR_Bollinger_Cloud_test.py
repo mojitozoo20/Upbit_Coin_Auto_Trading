@@ -11,12 +11,12 @@ plt.style.use('fast')
 # Import talib
 import talib
 
-TICKERS = ['KRW-DOGE','KRW-SOLVE','KRW-XRP','KRW-ETC','KRW-HUNT','KRW-ETH','KRW-BTC','KRW-EMC2','KRW-SAND','KRW-DMT','KRW-TON','KRW-UPP','KRW-IOTA','KRW-ADA','KRW-SSX','KRW-EOS','KRW-BTT']
+TICKERS = ['KRW-DOGE','KRW-PLA','KRW-DMT','KRW-ADA','KRW-SOLVE','KRW-FCT2','KRW-EOS','KRW-EMC2','KRW-BTT','KRW-VET','KRW-ONG','KRW-UPP']
 #TICKERS = ['KRW-DOGE']
 
 for ticker in TICKERS:
     # Import data from Upbit
-    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210523 22:00:00", count=10000, period=0.2)
+    df = pyupbit.get_ohlcv(ticker, interval="minute1", to="20210524 9:00:00", count=10000, period=0.2)
 
     # Drop the NaN values
     df = df.dropna()
