@@ -120,8 +120,8 @@ class Consumer(threading.Thread):
                 if i == (5 * 10):
                     print(f"\t{TICKER} [{datetime.datetime.now()}]")
                     print(f"보유량: {upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag}, signal= {curr.SAR < curr.BBAND_LOWER and curr.senkou_spna_A < curr.BBAND_MIDDLE and curr.senkou_spna_B < curr.BBAND_MIDDLE and curr.close < curr.BBAND_UPPER and curr.senkou_spna_A > curr.senkou_spna_B}")
-                    print(f"close: {curr.close}, BBAND: [{int(curr.BBAND_UPPER)} {int(curr.BBAND_MIDDLE)} {int(curr.BBAND_LOWER)}], PSAR: {curr.SAR}, 선행1: {curr.senkou_spna_A}, 선행2: {curr.senkou_spna_B}")
-                    print(f"현재가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({cash / CASH * 100}%)")
+                    print(f"BBAND: [{int(curr.BBAND_UPPER)} {int(curr.BBAND_MIDDLE)} {int(curr.BBAND_LOWER)}], PSAR: {curr.SAR}, 선행1: {curr.senkou_spna_A}, 선행2: {curr.senkou_spna_B}")
+                    print(f"시가: {price_open}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({cash / CASH * 100}%)")
                     i = 0
                 i += 1
             except:
