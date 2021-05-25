@@ -71,14 +71,12 @@ class Consumer(threading.Thread):
 
                     price_buy = price_curr
 
-                    while True:
-                        ret = upbit.buy_market_order(self.ticker, int(cash * 0.9995))  # 0.05%
-                        if ret == None or "error" in ret:
-                            print("<< 매수 주문 Error >>")
-                            time.sleep(0.5)
-                            continue
-                        print("매수 주문", ret)
-                        break
+                    ret = upbit.buy_market_order(self.ticker, int(cash * 0.9995))  # 0.05%
+                    if ret == None or "error" in ret:
+                        print("<< 매수 주문 Error >>")
+                        time.sleep(0.5)
+                        continue
+                    print("매수 주문", ret)
 
                     while True:
                         order = upbit.get_order(ret['uuid'])
@@ -120,7 +118,7 @@ class Consumer(threading.Thread):
                     print(f"\t{TICKER} [{datetime.datetime.now()}]")
                     print(f"보유량: {upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag}, signal= {curr.SAR < curr.BBAND_LOWER and curr.senkou_spna_A < curr.BBAND_MIDDLE and curr.senkou_spna_B < curr.BBAND_MIDDLE and curr.close < curr.BBAND_UPPER and curr.senkou_spna_A > curr.senkou_spna_B}")
                     print(f"BBAND: [{int(curr.BBAND_UPPER)} {int(curr.BBAND_MIDDLE)} {int(curr.BBAND_LOWER)}], PSAR: {curr.SAR}, 선행1: {curr.senkou_spna_A}, 선행2: {curr.senkou_spna_B}")
-                    print(f"전봉 종가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({cash / CASH * 100}%)")
+                    print(f"전봉 종가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({100 - (cash / CASH * 100)}%)")
                     i = 0
                 i += 1
             except:
