@@ -66,7 +66,7 @@ class Consumer(threading.Thread):
                     wait_flag  = False  # 매 봉 대기모드 해제
 
                 if hold_flag == False and wait_flag == False and \
-                    curr.SAR <= curr.BBAND_LOWER and curr.senkou_spna_A <= curr.BBAND_MIDDLE and \
+                    curr.SAR <= curr.close and curr.senkou_spna_A <= curr.BBAND_UPPER and \
                     curr.senkou_spna_B <= curr.BBAND_MIDDLE and curr.senkou_spna_A >= curr.senkou_spna_B:
 
                     price_buy = price_curr

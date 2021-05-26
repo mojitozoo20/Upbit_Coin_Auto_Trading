@@ -16,7 +16,7 @@ import datetime
 import time
 
 TICKERS = ['KRW-ETC','KRW-XRP','KRW-ETH','KRW-DOGE','KRW-SBD','KRW-BTC','KRW-BTT','KRW-EOS','KRW-QKC','KRW-ADA','KRW-BCH','KRW-FLOW','KRW-MLK','KRW-QTUM','KRW-VET','KRW-LSK','KRW-STEEM','KRW-OMG']
-#TICKERS = ['KRW-DOGE']
+#TICKERS = ['KRW-ETC']
 
 for ticker in TICKERS:
     # Import data from Upbit
@@ -66,19 +66,22 @@ for ticker in TICKERS:
     plt.legend()
     plt.show()
     '''
-    signal = (df.SAR <= df.BBAND_LOWER) & (df.senkou_spna_A <= df.BBAND_MIDDLE) & (df.senkou_spna_B <= df.BBAND_MIDDLE) & (df.senkou_spna_A >= df.senkou_spna_B)
+    signal = (df.SAR <= df.close) & (df.senkou_spna_A <= df.BBAND_UPPER) & (df.senkou_spna_B <= df.BBAND_MIDDLE) & (df.senkou_spna_A >= df.senkou_spna_B)
 
     earning_rate = 1
     sell_date = None
     win_count = 0
     lose_count = 0
+    price_count = []
+    price_sum = 0
+    price_sum_arr = []
 
     for b in df.index[signal]:
         if sell_date != None and b <= sell_date:
             continue
 
         target = df.loc[ b : ]
-        price_buy = target.iloc[1].open
+        price_buy = target.iloc[0].close
 
         sell_signal = (target.close < target.SAR)
         sell_candidate = target.index[sell_signal]
@@ -94,4 +97,10 @@ for ticker in TICKERS:
             win_count += 1
         else:
             lose_count += 1
+        price_count.append(price_sell - price_buy)
+        price_sum += (price_sell - price_buy)
+        price_sum_arr.append(price_sum)
+
     print(f'{ticker} : {earning_rate} 승리횟수 : {win_count} 패배횟수 : {lose_count}')
+    #print(f'손익내역 : {price_count}')
+    #print(f'누적내역 : {price_sum_arr}')
