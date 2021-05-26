@@ -15,14 +15,14 @@ import talib
 import datetime
 import time
 
-TICKERS = ['KRW-DOGE','KRW-PLA','KRW-DMT','KRW-ADA','KRW-SOLVE','KRW-FCT2','KRW-EOS','KRW-EMC2','KRW-BTT','KRW-VET','KRW-ONG','KRW-UPP']
+TICKERS = ['KRW-ETC','KRW-XRP','KRW-ETH','KRW-DOGE','KRW-SBD','KRW-BTC','KRW-BTT','KRW-EOS','KRW-QKC','KRW-ADA','KRW-BCH','KRW-FLOW','KRW-MLK','KRW-QTUM','KRW-VET','KRW-LSK','KRW-STEEM','KRW-OMG']
 #TICKERS = ['KRW-DOGE']
 
 for ticker in TICKERS:
     # Import data from Upbit
     if datetime.datetime.now().second == 0:
         time.sleep(1)
-    df = pyupbit.get_ohlcv(ticker, interval="minute1", to=datetime.datetime.now(), count=10000, period=0.2)
+    df = pyupbit.get_ohlcv(ticker, interval="minute1", to=datetime.datetime.now(), count=4320, period=0.2)
 
     # Drop the NaN values
     df = df.dropna()
@@ -70,6 +70,8 @@ for ticker in TICKERS:
 
     earning_rate = 1
     sell_date = None
+    win_count = 0
+    lose_count = 0
 
     for b in df.index[signal]:
         if sell_date != None and b <= sell_date:
@@ -88,4 +90,8 @@ for ticker in TICKERS:
         price_sell = target.loc[sell_date].close
 
         earning_rate *= (price_sell / price_buy) * 0.9987  # 수수료 0.05% 두 번 + 슬리피지 0.03%
-    print(ticker, ':', earning_rate)
+        if price_buy < price_sell:
+            win_count += 1
+        else:
+            lose_count += 1
+    print(f'{ticker} : {earning_rate} 승리횟수 : {win_count} 패배횟수 : {lose_count}')

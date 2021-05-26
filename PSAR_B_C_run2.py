@@ -9,7 +9,7 @@ import talib
 import time
 import datetime
 
-TICKER = "KRW-VET"
+TICKER = "KRW-SBD"
 CASH = 90000
 
 class Consumer(threading.Thread):
