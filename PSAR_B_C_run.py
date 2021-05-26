@@ -133,7 +133,7 @@ class Producer(threading.Thread):
 
     def run(self):
         while True:
-            if datetime.datetime.now().second == 1:
+            if datetime.datetime.now().second == 2:
                 price = pyupbit.get_current_price(TICKER)
                 self.q.put(price)
 
