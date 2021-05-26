@@ -66,7 +66,7 @@ for ticker in TICKERS:
     plt.legend()
     plt.show()
     '''
-    signal = (df.SAR <= df.close) & (df.senkou_spna_A <= df.BBAND_UPPER) & (df.senkou_spna_B <= df.BBAND_MIDDLE) & (df.senkou_spna_A >= df.senkou_spna_B)
+    signal = (df.SAR <= df.BBAND_LOWER) & (df.senkou_spna_A <= df.BBAND_MIDDLE) & (df.senkou_spna_B <= df.BBAND_MIDDLE) & (df.senkou_spna_A >= df.senkou_spna_B)
 
     earning_rate = 1
     sell_date = None

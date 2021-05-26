@@ -9,8 +9,7 @@ import talib
 import time
 import datetime
 
-TICKER = "KRW-ETC"
-CASH = 90000
+TICKER = "KRW-SBD"
 
 class Consumer(threading.Thread):
     def __init__(self, q):
@@ -29,8 +28,8 @@ class Consumer(threading.Thread):
             secret = f.readline().strip()
 
         upbit = pyupbit.Upbit(access, secret)
-        #cash  = upbit.get_balance()  # 2개 이상 종목 돌릴 시 모든 cash 코드 임의 설정
-        cash = CASH
+        cash  = upbit.get_balance()  # 2개 이상 종목 돌릴 시 모든 cash 코드 임의 설정
+        CASH = cash  # 수익률 계산을 위한 초기 보유 KRW
         print("보유 KRW:", cash)
 
         i = 0
@@ -66,7 +65,7 @@ class Consumer(threading.Thread):
                     wait_flag  = False  # 매 봉 대기모드 해제
 
                 if hold_flag == False and wait_flag == False and \
-                    curr.SAR <= curr.close and curr.senkou_spna_A <= curr.BBAND_UPPER and \
+                    curr.SAR <= curr.BBAND_LOWER and curr.senkou_spna_A <= curr.BBAND_MIDDLE and \
                     curr.senkou_spna_B <= curr.BBAND_MIDDLE and curr.senkou_spna_A >= curr.senkou_spna_B:
 
                     price_buy = price_curr
@@ -97,8 +96,7 @@ class Consumer(threading.Thread):
                         print("보유량 계산중...")
                         time.sleep(0.5)
                     
-                    #cash = upbit.get_balance()
-                    cash -= ((price_curr * volume) * 1.0005)
+                    cash = upbit.get_balance()
 
                 if hold_flag == True and curr.close < curr.SAR:
                     upbit.sell_market_order(self.ticker, volume)
@@ -106,7 +104,7 @@ class Consumer(threading.Thread):
                         volume = upbit.get_balance(self.ticker)
                         if volume == 0:
                             print("<< 매도 주문이 완료되었습니다 >>")
-                            cash += (CASH * (price_curr / price_buy) * 0.9995)  # 수수료 0.05%
+                            cash = upbit.get_balance()
                             price_buy = None
                             hold_flag = False
                             wait_flag = True
@@ -135,9 +133,9 @@ class Producer(threading.Thread):
 
     def run(self):
         while True:
-            price = pyupbit.get_current_price(TICKER)
-            self.q.put(price)
-            time.sleep(60)
+            if datetime.datetime.now().second == 1:
+                price = pyupbit.get_current_price(TICKER)
+                self.q.put(price)
 
 now = datetime.datetime.now()
 print(f'환영합니다 -- Upbit Auto Trading -- [{now.year}-{now.month}-{now.day} {now.hour}:{now.minute}:{now.second}]')
