@@ -15,7 +15,7 @@ import talib
 import datetime
 import time
 
-TICKERS = ['KRW-ETC','KRW-XRP','KRW-ETH','KRW-DOGE','KRW-SBD','KRW-BTC','KRW-BTT','KRW-EOS','KRW-QKC','KRW-ADA','KRW-BCH','KRW-FLOW','KRW-MLK','KRW-QTUM','KRW-VET','KRW-LSK','KRW-STEEM','KRW-OMG']
+TICKERS = ['KRW-ETC','KRW-XRP','KRW-ETH','KRW-EOS','KRW-BTC','KRW-ENJ','KRW-SBD','KRW-DOGE','KRW-ADA','KRW-VET','KRW-OMG','KRW-PCI','KRW-QTUM','KRW-MLK','KRW-EDR','KRW-BORA','KRW-BTT','KRW-BCH']
 #TICKERS = ['KRW-SBD']
 
 for ticker in TICKERS:
@@ -33,7 +33,7 @@ for ticker in TICKERS:
 
     # Calculate Bollinger Band
     df['BBAND_UPPER'], df['BBAND_MIDDLE'], df['BBAND_LOWER'] = talib.BBANDS(df['close'],20,2)
-    
+
     signal = (df.SAR <= df.BBAND_LOWER)
 
     earning_rate = 1
