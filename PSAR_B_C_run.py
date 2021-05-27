@@ -37,7 +37,7 @@ class Consumer(threading.Thread):
         while True:
             try:
                 if not self.q.empty():
-                    df = pyupbit.get_ohlcv(self.ticker, interval="minute1", to=datetime.datetime.now())  # DataFrame 갱신
+                    df = pyupbit.get_ohlcv(self.ticker, interval="minute1")  # DataFrame 갱신
                     df['SAR'] = talib.SAR(df.high, df.low, acceleration=0.02, maximum=0.2)  # Parabolic SAR 계산
                     df['BBAND_UPPER'], df['BBAND_MIDDLE'], df['BBAND_LOWER'] = talib.BBANDS(df['close'], 20, 2)  # Bollinger Band 계산
 
@@ -142,7 +142,7 @@ print(f'환영합니다 -- Upbit Auto Trading -- [{now.year}-{now.month}-{now.da
 print('트레이딩 대기중...')
 while True:
     now = datetime.datetime.now()
-    if  now.second == 1:  # 대기 후 1초에 시작
+    if  now.second == 0:  # 대기 후 0초에 시작
         q = queue.Queue()
         Producer(q).start()
         Consumer(q).start()
