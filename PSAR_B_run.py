@@ -9,7 +9,7 @@ import talib
 import time
 import datetime
 
-TICKER = "KRW-SBD"
+TICKER = "KRW-QTUM"
 
 class Consumer(threading.Thread):
     def __init__(self, q):
