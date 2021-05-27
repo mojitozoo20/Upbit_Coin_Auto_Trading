@@ -68,7 +68,7 @@ class Consumer(threading.Thread):
                     curr.SAR <= curr.BBAND_LOWER and curr.senkou_spna_A <= curr.BBAND_MIDDLE and \
                     curr.senkou_spna_B <= curr.BBAND_MIDDLE and curr.senkou_spna_A >= curr.senkou_spna_B:
 
-                    price_buy = price_curr
+                    price_buy = pyupbit.get_current_price(self.ticker)
 
                     while True:
                         ret = upbit.buy_market_order(self.ticker, int(cash * 0.9995))  # 0.05%
@@ -118,7 +118,7 @@ class Consumer(threading.Thread):
                     print(f"\t{TICKER} [{datetime.datetime.now()}]")
                     print(f"보유량: {upbit.get_balance_t(self.ticker)}, 보유KRW: {cash},  hold_flag= {hold_flag}, wait_flag= {wait_flag}, cloud_location= {curr.senkou_spna_A <= curr.BBAND_MIDDLE and curr.senkou_spna_B <= curr.BBAND_MIDDLE and curr.senkou_spna_A >= curr.senkou_spna_B}, SAR_location= {curr.SAR <= curr.BBAND_LOWER}")
                     print(f"BBAND: [{int(curr.BBAND_UPPER)} {int(curr.BBAND_MIDDLE)} {int(curr.BBAND_LOWER)}], PSAR: {curr.SAR}, 선행1: {curr.senkou_spna_A}, 선행2: {curr.senkou_spna_B}")
-                    print(f"전봉 종가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({100 - (cash / CASH * 100)}%)")
+                    print(f"시가: {price_curr}, 구매가: {price_buy}, 누적 수익: {cash - CASH} ({100 - (cash / CASH * 100)}%)")
                     i = 0
                 i += 1
             except:
