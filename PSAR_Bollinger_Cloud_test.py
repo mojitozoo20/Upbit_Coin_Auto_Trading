@@ -89,7 +89,10 @@ for ticker in TICKERS:
         if len(sell_candidate) == 0:
             break
 
-        sell_date = sell_candidate[0]
+        if len(sell_candidate) > 1:
+            sell_date = sell_candidate[1]
+        else:
+            sell_date = sell_candidate[0]
         price_sell = target.loc[sell_date].close
 
         earning_rate *= (price_sell / price_buy) * 0.9987  # 수수료 0.05% 두 번 + 슬리피지 0.03%

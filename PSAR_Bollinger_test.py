@@ -16,7 +16,7 @@ import datetime
 import time
 
 TICKERS = ['KRW-ETC','KRW-XRP','KRW-ETH','KRW-EOS','KRW-BTC','KRW-ENJ','KRW-SBD','KRW-DOGE','KRW-ADA','KRW-VET','KRW-OMG','KRW-PCI','KRW-QTUM','KRW-MLK','KRW-EDR','KRW-BORA','KRW-BTT','KRW-BCH']
-#TICKERS = ['KRW-SBD']
+#TICKERS = ['KRW-QTUM']
 
 for ticker in TICKERS:
     # Import data from Upbit
@@ -57,7 +57,10 @@ for ticker in TICKERS:
         if len(sell_candidate) == 0:
             break
 
-        sell_date = sell_candidate[0]
+        if len(sell_candidate) > 1:
+            sell_date = sell_candidate[1]
+        else:
+            sell_date = sell_candidate[0]
         price_sell = target.loc[sell_date].close
 
         earning_rate *= (price_sell / price_buy) * 0.9987  # 수수료 0.05% 두 번 + 슬리피지 0.03%
